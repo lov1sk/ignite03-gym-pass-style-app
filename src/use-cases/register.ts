@@ -21,6 +21,7 @@ export class RegisterUseCase {
     password,
   }: RegisterUseCaseRequest): Promise<RegisterUseCaseResponse> {
     const password_hash = await hash(password, 6);
+
     const userExists = await this.usersRepository.findByEmail(email);
 
     if (userExists) {
