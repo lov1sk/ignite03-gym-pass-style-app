@@ -24,10 +24,11 @@ export class PrismaGymsRepository implements IGymsRepository {
     });
     return gyms;
   }
-  async findManyNearby(user_latitude: number, user_longitude: number) {
+  async findManyNearby(latitude: number, longitude: number) {
     const nearbyGyms = await prisma.$queryRaw<Gym[]>`
-      SELECT * from gyms
-      WHERE ( 6371 * acos( cos( radians(${user_latitude}) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(${user_longitude}) ) + sin( radians(${user_longitude}) ) * sin( radians( latitude ) ) ) ) <= 10`;
+    SELECT * from gyms
+WHERE ( 6371 * acos( cos( radians(${latitude}) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(${longitude}) ) + sin( radians(${latitude}) ) * sin( radians( latitude ) ) ) ) <= 10
+    `;
     return nearbyGyms;
   }
   async create(data: Prisma.GymCreateInput) {
