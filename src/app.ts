@@ -1,13 +1,19 @@
 import { fastify } from "fastify";
-import { appRoutes } from "./http/routes";
-import { error } from "console";
-import { request } from "http";
 import { ZodError } from "zod";
 import { env } from "./env";
+import jwt from "@fastify/jwt";
+import { userRoutes } from "./http/controllers/users/routes";
+import { gymsRoutes } from "./http/controllers/gyms/routes";
+import { checkInsRoutes } from "./http/controllers/check-ins/routes";
 
 export const app = fastify();
-app.register(appRoutes);
-app.setErrorHandler((error, request, reply) => {
+app.register(jwt, {
+  secret: env.JWT_SECRET,
+});
+app.register(userRoutes);
+app.register(gymsRoutes);
+app.register(checkInsRoutes);
+app.setErrorHandler((error, _request, reply) => {
   // se for um erro de validação,ele retorna o StatusCode 400 para o cliente
   if (error instanceof ZodError) {
     return reply
