@@ -19,15 +19,32 @@ export async function authenticate(
     const { user } = await authenticateUseCase.execute({ email, password });
 
     const token = await reply.jwtSign(
-      {},
+      { role: user.role },
       {
         sign: {
           sub: user.id,
         },
       }
     );
+    const refreshToken = await reply.jwtSign(
+      { role: user.role },
+      {
+        sign: {
+          sub: user.id,
+          expiresIn: "7d", // expira em 7 dias
+        },
+      }
+    );
 
-    return reply.status(200).send({ token });
+    return reply
+      .setCookie("refreshToken", refreshToken, {
+        path: "/", //Todas as rotas do backend podem usar
+        secure: true, //Implementa o padrão HTTPs e não deixa o front end usar essa informação
+        sameSite: true, //Esse cookie só é valido no nosso dominio
+        httpOnly: true, //Só o backend pode usar o cookie
+      })
+      .status(200)
+      .send({ token });
   } catch (error) {
     if (error instanceof UserAlreadyExistsError) {
       return reply.status(400).send(error.message);

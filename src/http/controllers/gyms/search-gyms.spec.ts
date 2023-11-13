@@ -12,7 +12,7 @@ describe("Search gyms e2e", () => {
     await app.close();
   });
   it("should be able to get gyms by a search ", async () => {
-    const token = await createAndAuthenticateUser(app);
+    const token = await createAndAuthenticateUser(app, true);
 
     const { coordinates } = getValidCoordinates();
 

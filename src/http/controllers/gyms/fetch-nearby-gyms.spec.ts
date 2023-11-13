@@ -12,7 +12,7 @@ describe("Fetch Nearby gyms e2e", () => {
     await app.close();
   });
   it("should be able to get nearby gyms by user location", async () => {
-    const token = await createAndAuthenticateUser(app);
+    const token = await createAndAuthenticateUser(app, true);
 
     const { coordinates } = getValidCoordinates();
 
