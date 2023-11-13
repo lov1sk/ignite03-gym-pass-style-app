@@ -19,19 +19,15 @@ export class InMemoryGymsRepository implements IGymsRepository {
       .slice((page - 1) * 20, page * 20);
     return gyms;
   }
-  async findManyNearby(
-    user_latitude: number,
-    user_longitude: number
-  ): Promise<Gym[]> {
+  async findManyNearby(latitude: number, longitude: number): Promise<Gym[]> {
     const nearbyGyms = this.gyms.filter((gym) => {
       const distance = getDistanceBetweenCoordinates(
-        { latitude: user_latitude, longitude: user_longitude },
+        { latitude, longitude },
         {
           latitude: gym.latitude.toNumber(),
           longitude: gym.longitude.toNumber(),
         }
       );
-      console.log({ distanceIs: distance });
 
       return distance < 10;
     });
